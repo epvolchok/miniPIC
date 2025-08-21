@@ -19,35 +19,43 @@ class GridVar
     std::vector<T> data;
 
     public:
+    enum class FillType { Rand, Const};
+    enum class DiagnLine { X, Y };
     //empty constructor
     GridVar(): Nx{0}, Ny{0} {}
     //default constructor
     explicit GridVar(size_t Nx_, size_t Ny_):
-        Nx{Nx_}, Ny{Nx_},
+        Nx{Nx_}, Ny{Ny_},
         data(Nx_*Ny_)
     {}
     //with filling by a constant or random number from normal distribution
-    GridVar(size_t Nx_, size_t Ny_, const std::string& fill_type = "rand", T value = T{}):
-        Nx{Nx_}, Ny{Nx_},
+    GridVar(size_t Nx_, size_t Ny_, const FillType fill_type = FillType::Rand, T value = T{}):
+        Nx{Nx_}, Ny{Ny_},
         data(Nx_*Ny_)
     {
-        if (fill_type == "rand")
-            {
-                std::random_device rnd_device;
-                std::mt19937 mersenne_engine {rnd_device()};
-                std::normal_distribution<T> distribution(0.,1.0);
+        switch (fill_type)
+        {
+        case FillType::Rand:
+        {    std::random_device rnd_device;
+            std::mt19937 mersenne_engine {rnd_device()};
+            std::normal_distribution<T> distribution(0.,1.0);
 
-                auto gen = [&](){ return distribution(mersenne_engine); };
-                std::generate(data.begin(), data.end(), gen);
-            }
-        else if (fill_type == "const")
+            auto gen = [&](){ return distribution(mersenne_engine); };
+            std::generate(data.begin(), data.end(), gen);
+            break;
+        }
+        case FillType::Const:
         {
             std::fill(data.begin(), data.end(), value);
+            break;
         }
         
+        }
     }
 
-	std::pair<size_t, size_t> get_size() const
+
+
+    std::pair<size_t, size_t> get_size() const
     {
         std::pair<size_t, size_t> Size={Nx, Ny};
         return Size;
@@ -60,6 +68,7 @@ class GridVar
 
     T get(size_t ix, size_t iy) const
     {
+        
         assert(ix < Nx && iy < Ny);
         return data[iy*Nx + ix];
     }
@@ -70,16 +79,55 @@ class GridVar
         data[iy*Nx + ix] = val;
     }
 
+    T& operator()(size_t ix, size_t iy) &
+    {
+        assert(ix < Nx && iy < Ny);
+        return data[iy*Nx + ix];
+    }
+
     void write_to_binary(const std::filesystem::path& path, const std::string& filename)
     {
         std::filesystem::create_directories(path);
-        std::fstream wf(path / filename, std::ios::out | std::ios::binary);
+        std::ofstream wf(path / filename, std::ios::out | std::ios::binary);
+        if (!wf.is_open())
+        {
+        throw std::runtime_error("Error openning the file: " + (path / filename).string());
+           }
         wf.write(reinterpret_cast<const char*>(data.data()), data.size() * sizeof(T));
         if (!wf) {
             throw std::runtime_error("Failed to open file for writing: " + (path / filename).string());
         }
         wf.close();
-        if (!wf.good()) {
+        if (wf.fail()) {
+        throw std::runtime_error("Error writing to file: " + (path / filename).string());
+           }
+    }
+
+    void write_on_line(const std::filesystem::path& path, const std::string& filename, size_t ind, DiagnLine line_type)
+    {
+        std::filesystem::create_directories(path);
+        std::ofstream wf(path / filename);
+        if (!wf.is_open())
+        {
+        throw std::runtime_error("Error openning the file: " + (path / filename).string());
+           }
+        switch (line_type)
+        {
+            case DiagnLine::X:
+            {
+                for (auto iy=0; iy<Ny; ++iy)
+                    wf<<data[iy*Nx+ind]<<std::endl;
+                break;
+            }
+            case DiagnLine::Y:
+            {
+                for (auto ix=0; ix<Nx; ++ix)
+                    wf<<data[ind*Nx+ix]<<std::endl;
+                break;
+            }
+        }
+        wf.close();
+        if (wf.fail()) {
         throw std::runtime_error("Error writing to file: " + (path / filename).string());
            }
     }
