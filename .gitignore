@@ -3,3 +3,6 @@
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
+.cmake/
+compile_commands.json
+data/

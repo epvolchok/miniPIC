@@ -4,6 +4,9 @@
 #include <memory>
 #include <random>
 #include <algorithm>
+#include <fstream>
+#include <filesystem>
+
 template <typename T>
 class GridVar;
 
@@ -23,7 +26,7 @@ class GridVar
         Nx{Nx_}, Ny{Nx_},
         data(Nx_*Ny_)
     {}
-
+    //with filling by a constant or random number from normal distribution
     GridVar(size_t Nx_, size_t Ny_, const std::string& fill_type = "rand", T value = T{}):
         Nx{Nx_}, Ny{Nx_},
         data(Nx_*Ny_)
@@ -57,6 +60,7 @@ class GridVar
 
     T get(size_t ix, size_t iy) const
     {
+        assert(ix < Nx && iy < Ny);
         return data[iy*Nx + ix];
     }
 
@@ -66,7 +70,19 @@ class GridVar
         data[iy*Nx + ix] = val;
     }
 
-    //friend std::ostream& operator<<<T>(std::ostream& os, GridVar& v);
+    void write_to_binary(const std::filesystem::path& path, const std::string& filename)
+    {
+        std::filesystem::create_directories(path);
+        std::fstream wf(path / filename, std::ios::out | std::ios::binary);
+        wf.write(reinterpret_cast<const char*>(data.data()), data.size() * sizeof(T));
+        if (!wf) {
+            throw std::runtime_error("Failed to open file for writing: " + (path / filename).string());
+        }
+        wf.close();
+        if (!wf.good()) {
+        throw std::runtime_error("Error writing to file: " + (path / filename).string());
+           }
+    }
 
 };
 
