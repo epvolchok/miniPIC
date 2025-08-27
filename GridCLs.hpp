@@ -1,7 +1,6 @@
 #pragma once
 #include <cassert>
 #include <iostream>
-#include <memory>
 #include <random>
 #include <algorithm>
 #include <fstream>
@@ -66,23 +65,28 @@ class GridVar
         std::cout<<"Nx = "<<Nx<<", Ny = "<<Ny<<std::endl;
     }
 
+    __inline__ size_t lincoord(size_t ix, size_t iy)
+    {
+        return iy*Nx + ix;
+    }
+
     T get(size_t ix, size_t iy) const
     {
         
         assert(ix < Nx && iy < Ny);
-        return data[iy*Nx + ix];
+        return data[lincoord(ix, iy)];
     }
 
     void set(T val, size_t ix, size_t iy)
     {
         assert(ix < Nx && iy < Ny);
-        data[iy*Nx + ix] = val;
+        data[lincoord(ix, iy)] = val;
     }
 
     T& operator()(size_t ix, size_t iy) &
     {
         assert(ix < Nx && iy < Ny);
-        return data[iy*Nx + ix];
+        return data[lincoord(ix, iy)];
     }
 
     void write_to_binary(const std::filesystem::path& path, const std::string& filename)
@@ -94,16 +98,14 @@ class GridVar
         throw std::runtime_error("Error openning the file: " + (path / filename).string());
            }
         wf.write(reinterpret_cast<const char*>(data.data()), data.size() * sizeof(T));
-        if (!wf) {
-            throw std::runtime_error("Failed to open file for writing: " + (path / filename).string());
-        }
+        
         wf.close();
         if (wf.fail()) {
         throw std::runtime_error("Error writing to file: " + (path / filename).string());
            }
     }
 
-    void write_on_line(const std::filesystem::path& path, const std::string& filename, size_t ind, DiagnLine line_type)
+    void write_on_line(const std::filesystem::path& path, const std::string& filename, size_t ind, const DiagnLine line_type)
     {
         std::filesystem::create_directories(path);
         std::ofstream wf(path / filename);
@@ -116,13 +118,13 @@ class GridVar
             case DiagnLine::X:
             {
                 for (auto iy=0; iy<Ny; ++iy)
-                    wf<<data[iy*Nx+ind]<<std::endl;
+                    wf<<data[lincoord(ind, iy)]<<std::endl;
                 break;
             }
             case DiagnLine::Y:
             {
                 for (auto ix=0; ix<Nx; ++ix)
-                    wf<<data[ind*Nx+ix]<<std::endl;
+                    wf<<data[lincoord(ix, ind)]<<std::endl;
                 break;
             }
         }
