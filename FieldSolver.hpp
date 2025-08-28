@@ -66,38 +66,70 @@ class FieldSolver
         }
     }
 
-    void Periodic_boundaries(FieldGrid<T> &B1, FieldGrid<T> &E1, const FieldGrid<T> &B0, const FieldGrid<T> &E0)
+    void Periodic_MagneticF(FieldGrid<T> &B1, const FieldGrid<T> &B0, const FieldGrid<T> &E0)
     {
-        //for electric fields
-        for(size_t ix=0, iy=Ny-1;x<Nx-1;++ix)
+        for(size_t ix=1, iy=0; ix<Nx; ++ix)
         {
-
+            B1(ix, iy).x = B0(ix, iy).x - 0.5 * dt * (E0(ix, iy).z - E0(ix, Ny-1).z)/dy;
+            B1(ix, iy).y = B0(ix, iy).y + 0.5 * dt * (E0(ix, iy).z - E0(ix-1, iy).z)/dx;
+            B1(ix, iy).z = B0(ix, iy).z + 0.5 * dt * (E0(ix, iy).x - E0(ix, Ny-1).x)/dy -
+                        0.5 * dt * (E0(ix, iy).y - E0(ix-1, iy).y)/dx;
         }
-        for(size_t x=0, y=Ny-1;x<Nx-1;++x)
+        for(size_t ix=0, iy=1; iy<Ny; ++iy)
         {
-
+            B1(ix, iy).x = B0(ix, iy).x - 0.5 * dt * (E0(ix, iy).z - E0(ix, iy-1).z)/dy;
+            B1(ix, iy).y = B0(ix, iy).y + 0.5 * dt * (E0(ix, iy).z - E0(Nx-1, iy).z)/dx;
+            B1(ix, iy).z = B0(ix, iy).z + 0.5 * dt * (E0(ix, iy).x - E0(ix, iy-1).x)/dy -
+                        0.5 * dt * (E0(ix, iy).y - E0(Nx-1, iy).y)/dx;
         }
-        //x=Nx-1,y=Ny-1
-        //for magnetic fields
-        for(size_t x=1, y=0;x<Nx;++x)
-        {
-
-        }
-        for(size_t x=0, y=1;y<Ny;++y)
-        {
-
-        }
-        //size_t x=0,y=0; 
-
+        size_t iy=0, ix=0;
+            B1(ix, iy).x = B0(ix, iy).x - 0.5 * dt * (E0(ix, iy).z - E0(ix, Ny-1).z)/dy;
+            B1(ix, iy).y = B0(ix, iy).y + 0.5 * dt * (E0(ix, iy).z - E0(Nx-1, iy).z)/dx;
+            B1(ix, iy).z = B0(ix, iy).z + 0.5 * dt * (E0(ix, iy).x - E0(ix, Ny-1).x)/dy -
+                        0.5 * dt * (E0(ix, iy).y - E0(Nx-1, iy).y)/dx;
     }
 
-    void Boundary_conditions(const BorderType Btype, size_t width, FieldGrid<T> &B1, FieldGrid<T> &E1, const FieldGrid<T> &B0, const FieldGrid<T> &E0)
+    void Periodic_ElectricF(FieldGrid<T> &E1, const FieldGrid<T> &B0, const FieldGrid<T> &E0, const FieldGrid<T> &J)
+    {
+        for(size_t ix=0, iy=Ny-1; ix<Nx-1; ++ix)
+        {
+            E1(ix, iy).x = E0(ix, iy).x - dt * J(ix, iy) + dt * (B0(ix, 0).z - B0(ix, iy).z)/dy;
+            E1(ix, iy).y = E0(ix, iy).y - dt * J(ix, iy) - dt * (B0(ix+1, iy).z - B0(ix, iy).z)/dx;
+            E1(ix, iy).z = E0(ix, iy).z - dt * J(ix, iy) - dt * (B0(ix, 0)).x - B0(ix, iy).x)/dy +
+                        dt * (B0(ix+1, iy).y - B0(ix, iy).y)/dx;
+        }
+        for(size_t ix=Nx-1, iy=0; iy<Ny-1; ++ix)
+        {
+            E1(ix, iy).x = E0(ix, iy).x - dt * J(ix, iy) + dt * (B0(ix, iy+1).z - B0(ix, iy).z)/dy;
+            E1(ix, iy).y = E0(ix, iy).y - dt * J(ix, iy) - dt * (B0(0, iy).z - B0(ix, iy).z)/dx;
+            E1(ix, iy).z = E0(ix, iy).z - dt * J(ix, iy) - dt * (B0(ix, iy+1).x - B0(ix, iy).x)/dy +
+                        dt * (B0(0, iy).y - B0(ix, iy).y)/dx;
+        }
+        size_t ix=Nx-1, iy=Ny-1;
+            E1(ix, iy).x = E0(ix, iy).x - dt * J(ix, iy) + dt * (B0(ix, 0).z - B0(ix, iy).z)/dy;
+            E1(ix, iy).y = E0(ix, iy).y - dt * J(ix, iy) - dt * (B0(0, iy).z - B0(ix, iy).z)/dx;
+            E1(ix, iy).z = E0(ix, iy).z - dt * J(ix, iy) - dt * (B0(ix, 0).x - B0(ix, iy).x)/dy +
+                        dt * (B0(0, iy).y - B0(ix, iy).y)/dx;
+    }
+
+
+    void BoundaryConditions_Electric(const BorderType Btype, size_t width, FieldGrid<T> &E1, const FieldGrid<T> &B0, const FieldGrid<T> &E0, const FieldGrid<T> &J)
     {
         
         switch (Btype)
         {
         case BorderType::Periodic:
-            Periodic_boundaries(B1, E1, B0, E0);
+            Periodic_ElectricF(E1, B0, E0, J);
+            break;
+        }
+    }
+    void BoundaryConditions_Magnetic(const BorderType Btype, size_t width, FieldGrid<T> &B1, const FieldGrid<T> &B0, const FieldGrid<T> &E0)
+    {
+        
+        switch (Btype)
+        {
+        case BorderType::Periodic:
+            Periodic_MagneticF(B1, B0, E0);
             break;
         }
     }

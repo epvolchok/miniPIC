@@ -129,30 +129,6 @@ Filds_slover/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Filds_slover.dir/build.make CMakeFiles/Filds_slover.dir/build
 .PHONY : Filds_slover/fast
 
-Fields.o: Fields.cpp.o
-.PHONY : Fields.o
-
-# target to build an object file
-Fields.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Filds_slover.dir/build.make CMakeFiles/Filds_slover.dir/Fields.cpp.o
-.PHONY : Fields.cpp.o
-
-Fields.i: Fields.cpp.i
-.PHONY : Fields.i
-
-# target to preprocess a source file
-Fields.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Filds_slover.dir/build.make CMakeFiles/Filds_slover.dir/Fields.cpp.i
-.PHONY : Fields.cpp.i
-
-Fields.s: Fields.cpp.s
-.PHONY : Fields.s
-
-# target to generate assembly for a file
-Fields.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Filds_slover.dir/build.make CMakeFiles/Filds_slover.dir/Fields.cpp.s
-.PHONY : Fields.cpp.s
-
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -186,9 +162,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Filds_slover"
-	@echo "... Fields.o"
-	@echo "... Fields.i"
-	@echo "... Fields.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

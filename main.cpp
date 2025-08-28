@@ -70,10 +70,11 @@ int main()
     {
         SetCurrent_external(J, "sin", dt, 1., 1.);
         F.MagneticField_loop(B1, B0, E0);
+        F.BoundaryConditions_Magnetic(FieldSolver<double>::BorderType::Periodic, 1, B1, B0, E0);
         F.ElectricField_loop(E1, B1, E0, J);
+        F.BoundaryConditions_Electric(FieldSolver<double>::BorderType::Periodic, 1, E1, B1, E0, J);
         F.MagneticField_loop(B2, B1, E1);
-
-        F.Boundary_conditions(FieldSolver<double>::BorderType::Periodic, 1, B1, E1, B0, E0);
+        F.BoundaryConditions_Magnetic(FieldSolver<double>::BorderType::Periodic, 1, B2, B1, E1);
     }
 
 
