@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import struct
 import matplotlib
 matplotlib.use('qtagg')
 from matplotlib import rc
@@ -15,6 +16,21 @@ matplotlib.rcParams.update({'font.size': 18})
 def read_bin_data(path, Nx, Ny, type=np.float64):
     data = np.fromfile(path, dtype=type).reshape(Ny, Nx)
     return data
+
+def read_fieldgrid(filename, dtype=np.float64):
+    with open(filename, "rb") as f:
+        # читаем размеры
+        Nx = struct.unpack("Q", f.read(8))[0]  # size_t = 8 байт (обычно на 64-бит)
+        Ny = struct.unpack("Q", f.read(8))[0]
+
+        size = Nx * Ny
+
+        # читаем данные Ex, Ey, Ez (по порядку записи)
+        Ex = np.frombuffer(f.read(size * np.dtype(dtype).itemsize), dtype=dtype).reshape(Ny, Nx)
+        Ey = np.frombuffer(f.read(size * np.dtype(dtype).itemsize), dtype=dtype).reshape(Ny, Nx)
+        Ez = np.frombuffer(f.read(size * np.dtype(dtype).itemsize), dtype=dtype).reshape(Ny, Nx)
+
+    return Nx, Ny, Ex, Ey, Ez
 
 def read_txt(path):
     data = np.loadtxt(path)
@@ -35,17 +51,30 @@ def plot_1D(ax, data, xlabel, title):
 def main():
     Nx, Ny = 10, 20
 
-    fig, (ax_2D, ax_1D) = plt.subplots(nrows=2, ncols=1, figsize=(8,8))
-    filename = "test.bin"
-    path = os.path.join(os.getcwd(), "data", "results", filename)
-    data2D = read_bin_data(path, Nx, Ny)
-    print(data2D.shape)
-    plot_2D(ax_2D, data2D, 'x', 'y', 'Data')
+    fig, (ax1, ax2, ax3, ax4) = plt.subplots(nrows=4, ncols=1, figsize=(5,16))
+    filename = "FieldsE01.bin"
+    path = os.path.join(os.getcwd(), "data", "Fields", "2D", filename)
+    Nx, Ny, Jx, Jy, Jz = read_fieldgrid(path, dtype=np.float64)
+    print(Jx.shape)
+    plot_2D(ax1, Jx, 'x', 'y', 'Data')
 
-    filename = "test_line.txt"
-    path = os.path.join(os.getcwd(), "data", "results", filename)
-    data1D = read_txt(path)
-    plot_1D(ax_1D, data1D, 'x', 'Slice along y')
+    filename = "FieldsE05.bin"
+    path = os.path.join(os.getcwd(), "data", "Fields", "2D", filename)
+    Nx, Ny, Jx, Jy, Jz = read_fieldgrid(path, dtype=np.float64)
+    print(Jx.shape)
+    plot_2D(ax2, Jx, 'x', 'y', 'Data')
+
+    filename = "FieldsE10.bin"
+    path = os.path.join(os.getcwd(), "data", "Fields", "2D", filename)
+    Nx, Ny, Jx, Jy, Jz = read_fieldgrid(path, dtype=np.float64)
+    print(Jx.shape)
+    plot_2D(ax3, Jx, 'x', 'y', 'Data')
+
+    filename = "FieldsE15.bin"
+    path = os.path.join(os.getcwd(), "data", "Fields", "2D", filename)
+    Nx, Ny, Jx, Jy, Jz = read_fieldgrid(path, dtype=np.float64)
+    print(Jx.shape)
+    plot_2D(ax4, Jx, 'x', 'y', 'Data')
 
     plt.tight_layout()
     plt.show()

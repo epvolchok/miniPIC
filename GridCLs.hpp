@@ -100,20 +100,9 @@ class GridVar
         return data[lincoord(ix, iy)];
     }
 
-    void write_to_binary(const std::filesystem::path& path, const std::string& filename)
+    void write_to_binary(std::ofstream &wf) const
     {
-        std::filesystem::create_directories(path);
-        std::ofstream wf(path / filename, std::ios::out | std::ios::binary);
-        if (!wf.is_open())
-        {
-        throw std::runtime_error("Error openning the file: " + (path / filename).string());
-           }
-        wf.write(reinterpret_cast<const char*>(data.data()), data.size() * sizeof(T));
-        
-        wf.close();
-        if (wf.fail()) {
-        throw std::runtime_error("Error writing to file: " + (path / filename).string());
-           }
+        wf.write(reinterpret_cast<const char*>(data.data()), static_cast<std::streamsize>(data.size() * sizeof(T)));
     }
 
     void write_on_line(const std::filesystem::path& path, const std::string& filename, size_t ind, const DiagnLine line_type)

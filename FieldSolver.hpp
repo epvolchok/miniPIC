@@ -36,18 +36,18 @@ class FieldSolver
     {
         Vec3<T> E1;
         //E0=E0(ix, iy), B00=B0(ix, iy), B01=B0(ix+1, iy), B02=B0(ix, iy+1), J=J(ix, iy)
-        E1.x = E0.x - dt * J + dt * (B02.z - B00.z)/dy;
-        E1.y = E0.y - dt * J - dt * (B01.z - B00.z)/dx;
-        E1.z = E0.z - dt * J - dt * (B02.x - B00.x)/dy +
+        E1.x = E0.x - dt * J.x + dt * (B02.z - B00.z)/dy;
+        E1.y = E0.y - dt * J.y - dt * (B01.z - B00.z)/dx;
+        E1.z = E0.z - dt * J.z - dt * (B02.x - B00.x)/dy +
                         dt * (B01.y - B00.y)/dx;
         return E1;
     }
 
     void MagneticField_loop(FieldGrid<T> &B1, const FieldGrid<T> &B0, const FieldGrid<T> &E0)
     {
-        for (auto iy=1; iy<Ny; ++iy)
+        for (size_t iy=1; iy<Ny; ++iy)
         {
-            for (auto ix=1; ix<Nx; ++ix)
+            for (size_t ix=1; ix<Nx; ++ix)
             {
                 B1(ix, iy) = MagnFields_HalfMove(B0(ix, iy), E0(ix, iy), E0(ix-1, iy), E0(ix, iy-1)); //B^n+1/2
             }
@@ -56,9 +56,9 @@ class FieldSolver
 
     void ElectricField_loop(FieldGrid<T> &E1, const FieldGrid<T> &B1, const FieldGrid<T> &E0, const FieldGrid<T> &J)
     {
-        for (auto iy=0; iy<Ny-1; ++iy)
+        for (size_t iy=0; iy<Ny-1; ++iy)
         {
-            for (auto ix=0; ix<Nx-1; ++ix)
+            for (size_t ix=0; ix<Nx-1; ++ix)
             {
                 E1(ix, iy) = ElectrFields_Move(E0(ix, iy), B1(ix, iy), B1(ix+1, iy), B1(ix, iy+1), J(ix, iy));
             }
@@ -92,22 +92,22 @@ class FieldSolver
     {
         for(size_t ix=0, iy=Ny-1; ix<Nx-1; ++ix)
         {
-            E1(ix, iy).x = E0(ix, iy).x - dt * J(ix, iy) + dt * (B0(ix, 0).z - B0(ix, iy).z)/dy;
-            E1(ix, iy).y = E0(ix, iy).y - dt * J(ix, iy) - dt * (B0(ix+1, iy).z - B0(ix, iy).z)/dx;
-            E1(ix, iy).z = E0(ix, iy).z - dt * J(ix, iy) - dt * (B0(ix, 0).x - B0(ix, iy).x)/dy +
+            E1(ix, iy).x = E0(ix, iy).x - dt * J(ix, iy).x + dt * (B0(ix, 0).z - B0(ix, iy).z)/dy;
+            E1(ix, iy).y = E0(ix, iy).y - dt * J(ix, iy).y - dt * (B0(ix+1, iy).z - B0(ix, iy).z)/dx;
+            E1(ix, iy).z = E0(ix, iy).z - dt * J(ix, iy).z - dt * (B0(ix, 0).x - B0(ix, iy).x)/dy +
                         dt * (B0(ix+1, iy).y - B0(ix, iy).y)/dx;
         }
-        for(size_t ix=Nx-1, iy=0; iy<Ny-1; ++ix)
+        for(size_t ix=Nx-1, iy=0; iy<Ny-1; ++iy)
         {
-            E1(ix, iy).x = E0(ix, iy).x - dt * J(ix, iy) + dt * (B0(ix, iy+1).z - B0(ix, iy).z)/dy;
-            E1(ix, iy).y = E0(ix, iy).y - dt * J(ix, iy) - dt * (B0(0, iy).z - B0(ix, iy).z)/dx;
-            E1(ix, iy).z = E0(ix, iy).z - dt * J(ix, iy) - dt * (B0(ix, iy+1).x - B0(ix, iy).x)/dy +
+            E1(ix, iy).x = E0(ix, iy).x - dt * J(ix, iy).x + dt * (B0(ix, iy+1).z - B0(ix, iy).z)/dy;
+            E1(ix, iy).y = E0(ix, iy).y - dt * J(ix, iy).y - dt * (B0(0, iy).z - B0(ix, iy).z)/dx;
+            E1(ix, iy).z = E0(ix, iy).z - dt * J(ix, iy).z - dt * (B0(ix, iy+1).x - B0(ix, iy).x)/dy +
                         dt * (B0(0, iy).y - B0(ix, iy).y)/dx;
         }
         size_t ix=Nx-1, iy=Ny-1;
-            E1(ix, iy).x = E0(ix, iy).x - dt * J(ix, iy) + dt * (B0(ix, 0).z - B0(ix, iy).z)/dy;
-            E1(ix, iy).y = E0(ix, iy).y - dt * J(ix, iy) - dt * (B0(0, iy).z - B0(ix, iy).z)/dx;
-            E1(ix, iy).z = E0(ix, iy).z - dt * J(ix, iy) - dt * (B0(ix, 0).x - B0(ix, iy).x)/dy +
+            E1(ix, iy).x = E0(ix, iy).x - dt * J(ix, iy).x + dt * (B0(ix, 0).z - B0(ix, iy).z)/dy;
+            E1(ix, iy).y = E0(ix, iy).y - dt * J(ix, iy).y - dt * (B0(0, iy).z - B0(ix, iy).z)/dx;
+            E1(ix, iy).z = E0(ix, iy).z - dt * J(ix, iy).z - dt * (B0(ix, 0).x - B0(ix, iy).x)/dy +
                         dt * (B0(0, iy).y - B0(ix, iy).y)/dx;
     }
 
@@ -135,14 +135,16 @@ class FieldSolver
 
     void FieldsSwap(FieldGrid<T> &A1, FieldGrid<T> &A0)
     {
-        //FieldGrid<T> Temp(Nx, Ny, (double)0.0);
-        for (auto iy=0; iy<Ny-1; ++iy)
+        Vec3<T> Temp;
+        for (size_t iy=0; iy<Ny-1; ++iy)
         {
-            for (auto ix=0; ix<Nx-1; ++ix)
+            for (size_t ix=0; ix<Nx-1; ++ix)
             {
-                A0(ix, iy).x = A1(ix, iy).x;
-                A0(ix, iy).y = A1(ix, iy).y;
-                A0(ix, iy).z = A1(ix, iy).z;
+                Temp = A1(ix, iy);
+
+
+                A0(ix, iy) = Temp;
+
             }
         }
     }

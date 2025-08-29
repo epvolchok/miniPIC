@@ -20,6 +20,31 @@ struct Vec3
 
 };
 
+template <typename U>
+struct FieldRefTpl {
+    U& x;
+    U& y;
+    U& z;
+
+    // присвоение из Vec3
+    FieldRefTpl& operator=(const Vec3<std::remove_const_t<U>>& v) {
+        x = v.x; y = v.y; z = v.z;
+        return *this;
+    }
+
+    // присвоение из другого FieldRefTpl
+    FieldRefTpl& operator=(const FieldRefTpl<std::remove_const_t<U>>& other) {
+        x = other.x; y = other.y; z = other.z;
+        return *this;
+    }
+
+    // преобразование в Vec3 (всегда можно скопировать)
+    operator Vec3<std::remove_const_t<U>>() const {
+        return {x, y, z};
+    }
+};
+
+
 template <typename T>
 class FieldGrid
 {
@@ -32,29 +57,9 @@ class FieldGrid
     size_t Nx, Ny;
     GridVar<T> Ax, Ay, Az;
 
-    struct FieldRef 
-    {
-        T& x, y, z;
+    using FieldRef = FieldRefTpl<T>;
+    using ConstFieldRef = FieldRefTpl<const T>;
 
-        FieldRef& operator=(const Vec3<T>& v) 
-        {
-            x = v.x; y = v.y; z = v.z;
-            return *this;
-        }
-
-        FieldRef& operator=(const FieldRef& other) 
-        {
-            x = other.x;
-            y = other.y;
-            z = other.z;
-            return *this;
-        }
-
-        operator Vec3<T>() const 
-        {
-            return {x,y,z};
-        }
-    };
 
     
     public:
@@ -106,7 +111,14 @@ class FieldGrid
     FieldRef operator()(size_t ix, size_t iy)
     {
         assert(ix < Nx && iy < Ny);
-        return FieldRef{ Ax(ix,iy), Ay(ix,iy), Az(ix,iy) };
+        return { Ax(ix,iy), Ay(ix,iy), Az(ix,iy) };
+    }
+    
+
+    ConstFieldRef operator()(size_t ix, size_t iy) const
+    {
+        assert(ix < Nx && iy < Ny);
+        return { Ax(ix,iy), Ay(ix,iy), Az(ix,iy) };
     }
 
     void write_to_binary(const std::filesystem::path& path, const std::string &filename) const
@@ -122,9 +134,11 @@ class FieldGrid
         wf.write(reinterpret_cast<const char*>(&Ny), sizeof(Ny));
 
         //data as 3 blocks
-        wf.write(reinterpret_cast<const char*>(Ax.data()), Ax.size() * sizeof(T));
-        wf.write(reinterpret_cast<const char*>(Ay.data()), Ay.size() * sizeof(T));
-        wf.write(reinterpret_cast<const char*>(Az.data()), Az.size() * sizeof(T));
+
+        Ax.write_to_binary(wf);
+        Ay.write_to_binary(wf);
+        Az.write_to_binary(wf);
+
         
         wf.close();
         if (wf.fail()) {

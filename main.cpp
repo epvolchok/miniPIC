@@ -15,9 +15,9 @@ void SetCurrent_external(FieldGrid<T> &J, const int Jtype, size_t Nx, size_t Ny,
     switch (Jtype)
     {
     case 0:
-        for (auto iy=0; iy<Ny; ++iy)
+        for (size_t iy=0; iy<Ny; ++iy)
         {
-            for (auto ix=0; ix<Nx; ++ix)
+            for (size_t ix=0; ix<Nx; ++ix)
             {
                 J(ix, iy).x = J0 * sin(w * t);
             }
@@ -37,11 +37,12 @@ int main()
 
     size_t Nx = 20;
     size_t Ny = 10;
-    size_t MaxTime = 10;
+    size_t MaxTime = 20;
     
     double dx = 0.5, dy=0.5;
     double dt = 0.25;
     double w = 2. * std::numbers::pi / 5. / dt;
+    double J0 = 1.;
 
     size_t indX_diag = 10;
     size_t indY_diag = 5;
@@ -58,15 +59,21 @@ int main()
     FieldGrid<double> J(Nx, Ny, (double)0.0);
     FieldSolver<double> F(dt, dx, dy, Nx, Ny);
 
-    std::cout<<B0(0, 0).x<<std::endl;
-    B0(0, 0).x =1;
-    std::cout<<B0(0, 0).x<<std::endl;
-
     FieldGrid<double> B1(Nx, Ny, (double)0.0);
     FieldGrid<double> E1(Nx, Ny, (double)0.0);
     FieldGrid<double> B2(Nx, Ny, (double)0.0);
 
     Diagnostics<double> D(data_dir, MaxTime);
+    std::string filename = "PointFieldsB_XY" + std::to_string(pointdiag_ix) + "_" + std::to_string(pointdiag_iy) + ".txt";
+    fs::path file = data_dir / Fields1D_path / filename;
+    std::ofstream wf1(file, std::ios::out | std::ios::trunc);
+    wf1 << "#Ax    Ay    Az" << std::endl;
+    wf1.close();
+    filename = "PointFieldsE_XY" + std::to_string(pointdiag_ix) + "_" + std::to_string(pointdiag_iy) + ".txt";
+    file = data_dir / Fields1D_path / filename;
+    std::ofstream wf2(file, std::ios::out | std::ios::trunc);
+    wf2 << "#Ax    Ay    Az" << std::endl;
+    wf2.close();
 
     //B0 - B^n
     //B1 - B^n+1/2
@@ -75,10 +82,10 @@ int main()
     //E0 - E^n
     //E1 - E^n+1
     double t=0;
-    for (auto it=1; it<MaxTime; ++it)
+    for (size_t it=1; it<MaxTime; ++it)
     {
         t = it*dt;
-        /*if (it % DiagnStep == 0)
+        if (it % DiagnStep == 0)
         {
             D.run_2DFieldDiagnostic(B0, Fields2D_path, "FieldsB", it);
             D.run_2DFieldDiagnostic(E0, Fields2D_path, "FieldsE", it);
@@ -94,14 +101,12 @@ int main()
         D.run_1DFieldDiagnostic(J, Fields1D_path, "FieldsJ", it, indY_diag, GridVar<double>::DiagnLine::Y);
 
         D.run_pointFieldDiagnostic(B0, FieldsPoint_path, "PointFieldsB", pointdiag_ix, pointdiag_iy);
-        D.run_pointFieldDiagnostic(E0, FieldsPoint_path, "PointFieldsE", pointdiag_ix, pointdiag_iy);*/
+        D.run_pointFieldDiagnostic(E0, FieldsPoint_path, "PointFieldsE", pointdiag_ix, pointdiag_iy);
 
-        SetCurrent_external(J, 0, Nx, Ny, dt, t, 1., 1.);
-        D.run_pointFieldDiagnostic(J, FieldsPoint_path, "PointFieldsE", pointdiag_ix, pointdiag_iy);
-        D.run_1DFieldDiagnostic(J, Fields1D_path, "FieldsJ", it, indY_diag, GridVar<double>::DiagnLine::Y);
-        D.run_1DFieldDiagnostic(J, Fields1D_path, "FieldsJ", it, indX_diag, GridVar<double>::DiagnLine::X);
-        D.run_2DFieldDiagnostic(J, Fields2D_path, "FieldsJ", it);
-        /*F.MagneticField_loop(B1, B0, E0);
+        SetCurrent_external(J, 0, Nx, Ny, dt, t, w, J0);
+        
+
+        F.MagneticField_loop(B1, B0, E0);
         F.BoundaryConditions_Magnetic(FieldSolver<double>::BorderType::Periodic, 1, B1, B0, E0);
         F.ElectricField_loop(E1, B1, E0, J);
         F.BoundaryConditions_Electric(FieldSolver<double>::BorderType::Periodic, 1, E1, B1, E0, J);
@@ -109,7 +114,7 @@ int main()
         F.BoundaryConditions_Magnetic(FieldSolver<double>::BorderType::Periodic, 1, B2, B1, E1);
 
         F.FieldsSwap(B2, B0);
-        F.FieldsSwap(E1, E0);*/
+        F.FieldsSwap(E1, E0);
     }
 
     return 0;
