@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <fstream>
 #include <filesystem>
-#include <tuple>
+
 
 template <typename T>
 struct Vec3
@@ -103,12 +103,13 @@ class FieldGrid
         Az.set(ix, iy);
     }
 
-    FieldRef operator()(size_t ix, size_t iy) {
+    FieldRef operator()(size_t ix, size_t iy)
+    {
         assert(ix < Nx && iy < Ny);
         return FieldRef{ Ax(ix,iy), Ay(ix,iy), Az(ix,iy) };
     }
 
-    void write_to_binary(const std::filesystem::path& path, const std::string& filename)
+    void write_to_binary(const std::filesystem::path& path, const std::string &filename) const
     {
         std::filesystem::create_directories(path);
         std::ofstream wf(path / filename, std::ios::out | std::ios::binary);
@@ -131,7 +132,7 @@ class FieldGrid
            }
     }
 
-    void write_on_line(const std::filesystem::path& path, const std::string& filename, size_t ind, DiagnLine line_type)
+    void write_on_line(const std::filesystem::path& path, const std::string &filename, size_t ind, GridVar<T>::DiagnLine line_type) const
     {
         std::filesystem::create_directories(path);
         std::ofstream wf(path / filename);
@@ -142,13 +143,13 @@ class FieldGrid
         wf<<"#Ax    Ay    Az"<<std::endl;
         switch (line_type)
         {
-            case DiagnLine::X:
+            case GridVar<T>::DiagnLine::X:
             {
                 for (auto iy=0; iy<Ny; ++iy)
                     wf<<Ax(ind, iy)<<"\t"<<Ay(ind, iy)<<"\t"<<Az(ind, iy)<<std::endl;
                 break;
             }
-            case DiagnLine::Y:
+            case GridVar<T>::DiagnLine::Y:
             {
                 for (auto ix=0; ix<Nx; ++ix)
                     wf<<Ax(ix, ind)<<"\t"<<Ay(ix, ind)<<"\t"<<Az(ix, ind)<<std::endl;
@@ -156,6 +157,21 @@ class FieldGrid
             }
         }
         wf.close();
+        if (wf.fail()) {
+        throw std::runtime_error("Error writing to file: " + (path / filename).string());
+           }
+    }
+    void write_at_point(const std::filesystem::path& path, const std::string &filename, size_t ix, size_t iy) const
+    {
+        std::filesystem::create_directories(path);
+        std::ofstream wf(path / filename, std::ios::out | std::ios::app);
+        if (!wf.is_open())
+        {
+        throw std::runtime_error("Error openning the file: " + (path / filename).string());
+           }
+
+        wf<<Ax(ix, iy)<<"\t"<<Ay(ix, iy)<<"\t"<<Az(ix, iy)<<std::endl;
+                wf.close();
         if (wf.fail()) {
         throw std::runtime_error("Error writing to file: " + (path / filename).string());
            }

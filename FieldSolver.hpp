@@ -1,5 +1,4 @@
-#include <tuple>
-
+#pragma once
 #include "GridCLs.hpp"
 #include "FieldsCls.hpp"
 
@@ -8,11 +7,14 @@ class FieldSolver
 {
     private:
     T dt, dx, dy;
+    size_t Nx, Ny;
 
     public:
-    FieldSolver(): dt{0}, dx{0}, dy{0} {}
-    FieldSolver(T dt_, T dx_, T dy_):
-        dt{dt_}, dx{dx_}, dy{dy_}
+    FieldSolver(): dt{0}, dx{0}, dy{0},
+    Nx{0}, Ny{0} {}
+    FieldSolver(T dt_, T dx_, T dy_, size_t Nx_, size_t Ny_):
+        dt{dt_}, dx{dx_}, dy{dy_},
+        Nx{Nx_}, Ny{Ny_}
     {}
 
     enum class BorderType { Periodic, Reflect, Damping };
@@ -47,10 +49,7 @@ class FieldSolver
         {
             for (auto ix=1; ix<Nx; ++ix)
             {
-                //Currents = Currents::CalcCurrent(); //J^n+1/2
                 B1(ix, iy) = MagnFields_HalfMove(B0(ix, iy), E0(ix, iy), E0(ix-1, iy), E0(ix, iy-1)); //B^n+1/2
-                
-                //Diagnostics();
             }
         }
     }
@@ -66,7 +65,7 @@ class FieldSolver
         }
     }
 
-    void Periodic_MagneticF(FieldGrid<T> &B1, const FieldGrid<T> &B0, const FieldGrid<T> &E0)
+    void Periodic_Magnetic(FieldGrid<T> &B1, const FieldGrid<T> &B0, const FieldGrid<T> &E0)
     {
         for(size_t ix=1, iy=0; ix<Nx; ++ix)
         {
@@ -89,13 +88,13 @@ class FieldSolver
                         0.5 * dt * (E0(ix, iy).y - E0(Nx-1, iy).y)/dx;
     }
 
-    void Periodic_ElectricF(FieldGrid<T> &E1, const FieldGrid<T> &B0, const FieldGrid<T> &E0, const FieldGrid<T> &J)
+    void Periodic_Electric(FieldGrid<T> &E1, const FieldGrid<T> &B0, const FieldGrid<T> &E0, const FieldGrid<T> &J)
     {
         for(size_t ix=0, iy=Ny-1; ix<Nx-1; ++ix)
         {
             E1(ix, iy).x = E0(ix, iy).x - dt * J(ix, iy) + dt * (B0(ix, 0).z - B0(ix, iy).z)/dy;
             E1(ix, iy).y = E0(ix, iy).y - dt * J(ix, iy) - dt * (B0(ix+1, iy).z - B0(ix, iy).z)/dx;
-            E1(ix, iy).z = E0(ix, iy).z - dt * J(ix, iy) - dt * (B0(ix, 0)).x - B0(ix, iy).x)/dy +
+            E1(ix, iy).z = E0(ix, iy).z - dt * J(ix, iy) - dt * (B0(ix, 0).x - B0(ix, iy).x)/dy +
                         dt * (B0(ix+1, iy).y - B0(ix, iy).y)/dx;
         }
         for(size_t ix=Nx-1, iy=0; iy<Ny-1; ++ix)
@@ -119,7 +118,7 @@ class FieldSolver
         switch (Btype)
         {
         case BorderType::Periodic:
-            Periodic_ElectricF(E1, B0, E0, J);
+            Periodic_Electric(E1, B0, E0, J);
             break;
         }
     }
@@ -129,8 +128,22 @@ class FieldSolver
         switch (Btype)
         {
         case BorderType::Periodic:
-            Periodic_MagneticF(B1, B0, E0);
+            Periodic_Magnetic(B1, B0, E0);
             break;
+        }
+    }
+
+    void FieldsSwap(FieldGrid<T> &A1, FieldGrid<T> &A0)
+    {
+        //FieldGrid<T> Temp(Nx, Ny, (double)0.0);
+        for (auto iy=0; iy<Ny-1; ++iy)
+        {
+            for (auto ix=0; ix<Nx-1; ++ix)
+            {
+                A0(ix, iy).x = A1(ix, iy).x;
+                A0(ix, iy).y = A1(ix, iy).y;
+                A0(ix, iy).z = A1(ix, iy).z;
+            }
         }
     }
 };

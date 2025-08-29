@@ -70,6 +70,11 @@ class GridVar
         return iy*Nx + ix;
     }
 
+    __inline__ const size_t lincoord(size_t ix, size_t iy) const
+    {
+        return iy*Nx + ix;
+    }
+
     T get(size_t ix, size_t iy) const
     {
         
@@ -84,6 +89,12 @@ class GridVar
     }
 
     T& operator()(size_t ix, size_t iy) &
+    {
+        assert(ix < Nx && iy < Ny);
+        return data[lincoord(ix, iy)];
+    }
+
+    const T& operator()(size_t ix, size_t iy) const& 
     {
         assert(ix < Nx && iy < Ny);
         return data[lincoord(ix, iy)];
