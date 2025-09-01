@@ -121,6 +121,8 @@ class FieldGrid
         return { Ax(ix,iy), Ay(ix,iy), Az(ix,iy) };
     }
 
+    
+
     void write_to_binary(const std::filesystem::path& path, const std::string &filename) const
     {
         std::filesystem::create_directories(path);

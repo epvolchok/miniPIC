@@ -49,7 +49,13 @@ class FieldSolver
         {
             for (size_t ix=1; ix<Nx; ++ix)
             {
+                
                 B1(ix, iy) = MagnFields_HalfMove(B0(ix, iy), E0(ix, iy), E0(ix-1, iy), E0(ix, iy-1)); //B^n+1/2
+                /*if ((ix < 13 && ix > 7) && (iy < 8 && iy > 2))
+                {
+                    std::cout<< "ix = " << ix << " iy = " << iy << std::endl;
+                    std::cout<< "Bx = " << B1(ix, iy).x << " By = " << B1(ix, iy).y << " Bz = "<< B1(ix, iy).z << std::endl;
+                }*/
             }
         }
     }
@@ -61,6 +67,11 @@ class FieldSolver
             for (size_t ix=0; ix<Nx-1; ++ix)
             {
                 E1(ix, iy) = ElectrFields_Move(E0(ix, iy), B1(ix, iy), B1(ix+1, iy), B1(ix, iy+1), J(ix, iy));
+                /*if ((ix < 13 && ix > 7) && (iy < 8 && iy > 2))
+                {
+                    std::cout<< "ix = " << ix << " iy = " << iy << std::endl;
+                    std::cout<< "Ex = " << E1(ix, iy).x << " Ey = " << E1(ix, iy).y << " Ez = "<< E1(ix, iy).z << std::endl;
+                }*/
             }
         }
     }

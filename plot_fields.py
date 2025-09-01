@@ -56,25 +56,25 @@ def main():
     path = os.path.join(os.getcwd(), "data", "Fields", "2D", filename)
     Nx, Ny, Jx, Jy, Jz = read_fieldgrid(path, dtype=np.float64)
     print(Jx.shape)
-    plot_2D(ax1, Jx, 'x', 'y', 'Data')
+    plot_2D(ax1, Jx, 'x', 'y', '')
 
     filename = "FieldsE05.bin"
     path = os.path.join(os.getcwd(), "data", "Fields", "2D", filename)
     Nx, Ny, Jx, Jy, Jz = read_fieldgrid(path, dtype=np.float64)
     print(Jx.shape)
-    plot_2D(ax2, Jx, 'x', 'y', 'Data')
+    plot_2D(ax2, Jx, 'x', 'y', '')
 
     filename = "FieldsE10.bin"
     path = os.path.join(os.getcwd(), "data", "Fields", "2D", filename)
     Nx, Ny, Jx, Jy, Jz = read_fieldgrid(path, dtype=np.float64)
     print(Jx.shape)
-    plot_2D(ax3, Jx, 'x', 'y', 'Data')
+    plot_2D(ax3, Jx, 'x', 'y', '')
 
-    filename = "FieldsE15.bin"
+    filename = "FieldsE19.bin"
     path = os.path.join(os.getcwd(), "data", "Fields", "2D", filename)
     Nx, Ny, Jx, Jy, Jz = read_fieldgrid(path, dtype=np.float64)
     print(Jx.shape)
-    plot_2D(ax4, Jx, 'x', 'y', 'Data')
+    plot_2D(ax4, Jx, 'x', 'y', '')
 
     plt.tight_layout()
     plt.show()
