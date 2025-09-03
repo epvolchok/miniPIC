@@ -1,4 +1,4 @@
-#include "FieldSolver.hpp"
+#include <FieldSolver.hpp>
 
 Vec3<double> FieldSolver::MagnFields_HalfMove(const Vec3<double> &B0, const Vec3<double> &E00, const Vec3<double> &E01, const Vec3<double> &E02)
 {

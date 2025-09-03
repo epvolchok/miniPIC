@@ -1,4 +1,4 @@
-#include "Diagnostics.hpp"
+#include <Diagnostics.hpp>
 
 std::string Diagnostics::make_filename(const std::string &filename, size_t ind, const std::string &filetype)
 {

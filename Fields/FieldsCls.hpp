@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <fstream>
 #include <filesystem>
-#include "GridCLs.hpp"
+#include <GridCLs.hpp>
 
 
 class FieldGrid

@@ -117,17 +117,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named Fields_slover
+# Target rules for targets named Fields_solver
 
 # Build rule for target.
-Fields_slover: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Fields_slover
-.PHONY : Fields_slover
+Fields_solver: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Fields_solver
+.PHONY : Fields_solver
 
 # fast build rule for target.
-Fields_slover/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Fields_slover.dir/build.make CMakeFiles/Fields_slover.dir/build
-.PHONY : Fields_slover/fast
+Fields_solver/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Fields_solver.dir/build.make CMakeFiles/Fields_solver.dir/build
+.PHONY : Fields_solver/fast
 
 #=============================================================================
 # Target rules for targets named Fields
@@ -160,7 +160,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Fields_slover.dir/build.make CMakeFiles/Fields_slover.dir/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Fields_solver.dir/build.make CMakeFiles/Fields_solver.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -168,7 +168,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Fields_slover.dir/build.make CMakeFiles/Fields_slover.dir/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Fields_solver.dir/build.make CMakeFiles/Fields_solver.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -176,7 +176,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Fields_slover.dir/build.make CMakeFiles/Fields_slover.dir/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Fields_solver.dir/build.make CMakeFiles/Fields_solver.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -189,7 +189,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... Diag"
 	@echo "... Fields"
-	@echo "... Fields_slover"
+	@echo "... Fields_solver"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
