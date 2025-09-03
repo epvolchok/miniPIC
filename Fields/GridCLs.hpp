@@ -137,12 +137,40 @@ class GridVar
 };
 
 
-/* template <typename T>
-std::ostream& operator<<(std::ostream& os, GridVar<T>& v)
+template <typename T>
+struct Vec3
 {
-	os << "(";
-	for (unsigned i=0; i<(v.size-1); ++i)
-		os << (v.data[i]) << ", ";
-	os << (v.data[v.size-1]) << ")";
-	return os;
-} */
+    T x, y, z;
+
+    Vec3& operator=(const Vec3& other) = default;
+    Vec3 operator+(const Vec3& other) const
+    {
+        return {x+other.x, y+other.y, z+other.z};
+    }
+
+
+};
+
+template <typename U>
+struct FieldRefTpl {
+    U& x;
+    U& y;
+    U& z;
+
+    // присвоение из Vec3
+    FieldRefTpl& operator=(const Vec3<std::remove_const_t<U>>& v) {
+        x = v.x; y = v.y; z = v.z;
+        return *this;
+    }
+
+    // присвоение из другого FieldRefTpl
+    FieldRefTpl& operator=(const FieldRefTpl<std::remove_const_t<U>>& other) {
+        x = other.x; y = other.y; z = other.z;
+        return *this;
+    }
+
+    // преобразование в Vec3 (всегда можно скопировать)
+    operator Vec3<std::remove_const_t<U>>() const {
+        return {x, y, z};
+    }
+};

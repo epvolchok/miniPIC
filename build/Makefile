@@ -117,24 +117,50 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named Filds_slover
+# Target rules for targets named Fields_slover
 
 # Build rule for target.
-Filds_slover: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Filds_slover
-.PHONY : Filds_slover
+Fields_slover: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Fields_slover
+.PHONY : Fields_slover
 
 # fast build rule for target.
-Filds_slover/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Filds_slover.dir/build.make CMakeFiles/Filds_slover.dir/build
-.PHONY : Filds_slover/fast
+Fields_slover/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Fields_slover.dir/build.make CMakeFiles/Fields_slover.dir/build
+.PHONY : Fields_slover/fast
+
+#=============================================================================
+# Target rules for targets named Fields
+
+# Build rule for target.
+Fields: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Fields
+.PHONY : Fields
+
+# fast build rule for target.
+Fields/fast:
+	$(MAKE) $(MAKESILENT) -f Fields/CMakeFiles/Fields.dir/build.make Fields/CMakeFiles/Fields.dir/build
+.PHONY : Fields/fast
+
+#=============================================================================
+# Target rules for targets named Diag
+
+# Build rule for target.
+Diag: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Diag
+.PHONY : Diag
+
+# fast build rule for target.
+Diag/fast:
+	$(MAKE) $(MAKESILENT) -f Diagnostics/CMakeFiles/Diag.dir/build.make Diagnostics/CMakeFiles/Diag.dir/build
+.PHONY : Diag/fast
 
 main.o: main.cpp.o
 .PHONY : main.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Filds_slover.dir/build.make CMakeFiles/Filds_slover.dir/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Fields_slover.dir/build.make CMakeFiles/Fields_slover.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -142,7 +168,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Filds_slover.dir/build.make CMakeFiles/Filds_slover.dir/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Fields_slover.dir/build.make CMakeFiles/Fields_slover.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -150,7 +176,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Filds_slover.dir/build.make CMakeFiles/Filds_slover.dir/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Fields_slover.dir/build.make CMakeFiles/Fields_slover.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -161,7 +187,9 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... Filds_slover"
+	@echo "... Diag"
+	@echo "... Fields"
+	@echo "... Fields_slover"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

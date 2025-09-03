@@ -2,15 +2,13 @@
 #include <filesystem>
 #include <numbers>
 
-#include "GridCLs.hpp"
-#include "FieldsCls.hpp"
 #include "FieldSolver.hpp"
 #include "Diagnostics.hpp"
 
 namespace fs = std::filesystem;
 
-template <typename T>
-void SetCurrent_external(FieldGrid<T> &J, const int Jtype, size_t Nx, size_t Ny, T dt, T it, T w=T{}, T J0=T{}, size_t t0=T{})
+
+void SetCurrent_external(FieldGrid &J, const int Jtype, size_t Nx, size_t Ny, double dt, double it, double w, double J0, size_t t0)
 {
     switch (Jtype)
     {
@@ -52,16 +50,16 @@ int main()
     size_t DiagnStep = 1;
 
 
-    FieldGrid<double> E0(Nx, Ny, (double)0.0); //create 3-component grid variable and initialize with 0
-    FieldGrid<double> B0(Nx, Ny, (double)0.0);
-    FieldGrid<double> J(Nx, Ny, (double)0.0);
-    FieldSolver<double> F(dt, dx, dy, Nx, Ny);
+    FieldGrid E0(Nx, Ny, (double)0.0); //create 3-component grid variable and initialize with 0
+    FieldGrid B0(Nx, Ny, (double)0.0);
+    FieldGrid J(Nx, Ny, (double)0.0);
+    FieldSolver F(dt, dx, dy, Nx, Ny);
 
-    FieldGrid<double> B1(Nx, Ny, (double)0.0);
-    FieldGrid<double> E1(Nx, Ny, (double)0.0);
-    FieldGrid<double> B2(Nx, Ny, (double)0.0);
+    FieldGrid B1(Nx, Ny, (double)0.0);
+    FieldGrid E1(Nx, Ny, (double)0.0);
+    FieldGrid B2(Nx, Ny, (double)0.0);
 
-    Diagnostics<double> D(data_dir, MaxTime);
+    Diagnostics D(data_dir, MaxTime);
     std::string filename = "PointFieldsB_XY" + std::to_string(pointdiag_ix) + "_" + std::to_string(pointdiag_iy) + ".txt";
     fs::path file = data_dir / FieldsPoint_path / filename;
     std::ofstream wf1(file, std::ios::out | std::ios::trunc);
@@ -107,7 +105,7 @@ int main()
         
 
         F.MagneticField_loop(B1, B0, E0);
-        F.BoundaryConditions_Magnetic(FieldSolver<double>::BorderType::Periodic, 1, B1, B0, E0);
+        F.BoundaryConditions_Magnetic(FieldSolver::BorderType::Periodic, 1, B1, B0, E0);
 
         /*std::cout<<"Bx(0, 4) = " << B1(0, 4).x << " By = " << B1(0, 4).y << " Bz = " << B1(0, 4).z << std::endl;
         std::cout<<"Bx(0, 5) = " << B1(0, 5).x << " By = " << B1(0, 5).y << " Bz = " << B1(0, 5).z << std::endl;
@@ -117,7 +115,7 @@ int main()
         std::cout<<"Bx(Nx-1, 6) = " << B1(Nx-1, 6).x << " By = " << B1(Nx-1, 6).y << " Bz = " << B1(Nx-1, 6).z << std::endl;*/
 
         F.ElectricField_loop(E1, B1, E0, J);
-        F.BoundaryConditions_Electric(FieldSolver<double>::BorderType::Periodic, 1, E1, B1, E0, J);
+        F.BoundaryConditions_Electric(FieldSolver::BorderType::Periodic, 1, E1, B1, E0, J);
 
         /*std::cout<<"Ex (0, 4) = " << E1(0, 4).x << " Ey = " << E1(0, 4).y << " Ez = " << E1(0, 4).z << std::endl;
         std::cout<<"Ex (0, 5) = " << E1(0, 5).x << " Ey = " << E1(0, 5).y << " Ez = " << E1(0, 5).z << std::endl;
@@ -127,7 +125,7 @@ int main()
         std::cout<<"Ex(Nx-1, 6) = " << E1(Nx-1, 6).x << " Ey = " << E1(Nx-1, 6).y << " Ez = " << E1(Nx-1, 6).z << std::endl;*/
 
         F.MagneticField_loop(B2, B1, E1);
-        F.BoundaryConditions_Magnetic(FieldSolver<double>::BorderType::Periodic, 1, B2, B1, E1);
+        F.BoundaryConditions_Magnetic(FieldSolver::BorderType::Periodic, 1, B2, B1, E1);
 
         /*std::cout<<"Bx (0, 4) = " << B2(0, 4).x << " By = " << B2(0, 4).y << " Bz = " << B2(0, 4).z << std::endl;
         std::cout<<"Bx (0, 5) = " << B2(0, 5).x << " By = " << B2(0, 5).y << " Bz = " << B2(0, 5).z << std::endl;
