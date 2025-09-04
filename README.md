@@ -10,6 +10,21 @@
 
 ## Structure of the results
 
+```
+data
+├── Fields
+|   ├── 2D # binary files recorded at the diagnostic step
+           # the entire computational domain
+|   |   ├── ElectricFields
+|   |   ├── MagneticFields
+|   |   ├── Current
+|   ├── 1D # text files recorded at each simulation step
+           # slices along X and Y
+|   |   ├── ElectricFields
+|   |   ├── MagneticFields
+|   |   ├── Current
+|   ├── Point # point diagnostic at each step, txt
+```
 
 
 ## Dependecies
