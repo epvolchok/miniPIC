@@ -8,6 +8,10 @@
 - Periodic boundary conditions;
 - Visualisation with Python, matplotlib.
 
+## Structure of the results
+
+
+
 ## Dependecies
 - C++-20
 - CMake 3.10+

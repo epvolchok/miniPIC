@@ -25,10 +25,7 @@ void SetCurrent_external(FieldGrid &J, const int Jtype, size_t Nx, size_t Ny, do
 int main()
 {
     fs::path cwd = fs::current_path();
-    fs::path data_dir = cwd.parent_path() / "data" / "Fields";
-    fs::path Fields2D_path = "2D";
-    fs::path Fields1D_path = "1D";
-    fs::path FieldsPoint_path = "Point";
+    fs::path data_dir = cwd.parent_path() / "data";
 
     size_t Nx = 20;
     size_t Ny = 10;
@@ -42,10 +39,15 @@ int main()
 
     size_t indX_diag = 10;
     size_t indY_diag = 5;
+    std::set<size_t> Xlines_diag{indX_diag};
+    std::set<size_t> Ylines_diag{indY_diag};
+
+    //std::cout<<"Xlines: "<<Xlines_diag.empty()<<std::endl;
+    //std::cout<<"Ylines: "<<Ylines_diag.empty()<<std::endl;
+
     size_t pointdiag_ix = 10;
     size_t pointdiag_iy = 5;
-
-
+    std::set<std::pair<size_t, size_t>> point_diag{{pointdiag_ix, pointdiag_iy}};
 
     size_t DiagnStep = 1;
 
@@ -59,17 +61,8 @@ int main()
     FieldGrid E1(Nx, Ny, (double)0.0);
     FieldGrid B2(Nx, Ny, (double)0.0);
 
-    Diagnostics D(data_dir, MaxTime);
-    std::string filename = "PointFieldsB_XY" + std::to_string(pointdiag_ix) + "_" + std::to_string(pointdiag_iy) + ".txt";
-    fs::path file = data_dir / FieldsPoint_path / filename;
-    std::ofstream wf1(file, std::ios::out | std::ios::trunc);
-    wf1 << "#Ax    Ay    Az" << std::endl;
-    wf1.close();
-    filename = "PointFieldsE_XY" + std::to_string(pointdiag_ix) + "_" + std::to_string(pointdiag_iy) + ".txt";
-    file = data_dir / FieldsPoint_path / filename;
-    std::ofstream wf2(file, std::ios::out | std::ios::trunc);
-    wf2 << "#Ax    Ay    Az" << std::endl;
-    wf2.close();
+    Diagnostics Diag(data_dir, MaxTime, Nx, Ny, DiagnStep, point_diag, Xlines_diag, Ylines_diag,
+                    true, true, true);
 
     //B0 - B^n
     //B1 - B^n+1/2
@@ -78,28 +71,16 @@ int main()
     //E0 - E^n
     //E1 - E^n+1
     //J(0, 5).x = 1.;
+
     double t=0;
     for (size_t it=1; it<MaxTime; ++it)
     {
         std::cout<<"it = "<<it<<std::endl;
         t = it*dt;
-        if (it % DiagnStep == 0)
-        {
-            D.run_2DFieldDiagnostic(B0, Fields2D_path, "FieldsB", it);
-            D.run_2DFieldDiagnostic(E0, Fields2D_path, "FieldsE", it);
-            D.run_2DFieldDiagnostic(J, Fields2D_path, "FieldsJ", it);
-        }
 
-        D.run_1DFieldDiagnostic(B0, Fields1D_path, "FieldsB", it, indX_diag, GridVar<double>::DiagnLine::X);
-        D.run_1DFieldDiagnostic(E0, Fields1D_path, "FieldsE", it, indX_diag, GridVar<double>::DiagnLine::X);
-        D.run_1DFieldDiagnostic(J, Fields1D_path, "FieldsJ", it, indX_diag, GridVar<double>::DiagnLine::X);
-
-        D.run_1DFieldDiagnostic(B0, Fields1D_path, "FieldsB", it, indY_diag, GridVar<double>::DiagnLine::Y);
-        D.run_1DFieldDiagnostic(E0, Fields1D_path, "FieldsE", it, indY_diag, GridVar<double>::DiagnLine::Y);
-        D.run_1DFieldDiagnostic(J, Fields1D_path, "FieldsJ", it, indY_diag, GridVar<double>::DiagnLine::Y);
-
-        D.run_pointFieldDiagnostic(B0, FieldsPoint_path, "PointFieldsB", pointdiag_ix, pointdiag_iy);
-        D.run_pointFieldDiagnostic(E0, FieldsPoint_path, "PointFieldsE", pointdiag_ix, pointdiag_iy);
+        Diag.run_2DFieldDiagnostic(E0, B0, J, it);
+        Diag.run_1DFieldDiagnostic(E0, B0, J, it);
+        Diag.run_pointFieldDiagnostic(E0, B0, J, it);
 
         SetCurrent_external(J, 0, Nx, Ny, dt, t, w, J0, t0);
         

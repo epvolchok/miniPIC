@@ -53,5 +53,5 @@ class FieldGrid
     ConstFieldRef operator()(size_t ix, size_t iy) const;
     void write_to_binary(const std::filesystem::path& path, const std::string &filename) const;
     void write_on_line(const std::filesystem::path& path, const std::string &filename, size_t ind, GridVar<double>::DiagnLine line_type) const;
-    void write_at_point(const std::filesystem::path& path, const std::string &filename, size_t ix, size_t iy) const;
+    void write_at_point(const std::filesystem::path& path, const std::string &filename, size_t ix, size_t iy, size_t it) const;
 };

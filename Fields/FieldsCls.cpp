@@ -38,7 +38,7 @@ FieldGrid::ConstFieldRef FieldGrid::operator()(size_t ix, size_t iy) const
 
 void FieldGrid::write_to_binary(const std::filesystem::path& path, const std::string &filename) const
 {
-    std::filesystem::create_directories(path);
+
     std::ofstream wf(path / filename, std::ios::out | std::ios::binary);
     if (!wf.is_open())
     {
@@ -63,7 +63,7 @@ void FieldGrid::write_to_binary(const std::filesystem::path& path, const std::st
 
 void FieldGrid::write_on_line(const std::filesystem::path& path, const std::string &filename, size_t ind, GridVar<double>::DiagnLine line_type) const
 {
-    std::filesystem::create_directories(path);
+
     std::ofstream wf(path / filename);
     if (!wf.is_open())
     {
@@ -90,16 +90,15 @@ void FieldGrid::write_on_line(const std::filesystem::path& path, const std::stri
     throw std::runtime_error("Error writing to file: " + (path / filename).string());
        }
 }
-void FieldGrid::write_at_point(const std::filesystem::path& path, const std::string &filename, size_t ix, size_t iy) const
+void FieldGrid::write_at_point(const std::filesystem::path& path, const std::string &filename, size_t ix, size_t iy, size_t it) const
 {
-    std::filesystem::create_directories(path);
     std::ofstream wf(path / filename, std::ios::out | std::ios::app);
     if (!wf.is_open())
     {
     throw std::runtime_error("Error openning the file: " + (path / filename).string());
         }
 
-    wf<<Ax(ix, iy)<<"\t"<<Ay(ix, iy)<<"\t"<<Az(ix, iy)<<std::endl;
+    wf<<it<<"\t"<<Ax(ix, iy)<<"\t"<<Ay(ix, iy)<<"\t"<<Az(ix, iy)<<std::endl;
             wf.close();
     if (wf.fail()) {
     throw std::runtime_error("Error writing to file: " + (path / filename).string());
