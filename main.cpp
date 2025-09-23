@@ -82,6 +82,8 @@ int main()
         Diag.run_1DFieldDiagnostic(E0, B0, J, it);
         Diag.run_pointFieldDiagnostic(E0, B0, J, it);
 
+        Diag.FieldDiagnostic_Energy(E0, B0, it);
+
         SetCurrent_external(J, 0, Nx, Ny, dt, t, w, J0, t0);
         
 

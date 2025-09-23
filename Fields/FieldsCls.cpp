@@ -104,3 +104,17 @@ void FieldGrid::write_at_point(const std::filesystem::path& path, const std::str
     throw std::runtime_error("Error writing to file: " + (path / filename).string());
        }
 }
+
+double FieldGrid::Energy()
+{
+    double En = 0.0;
+    for (size_t iy=1; iy<Ny; ++iy)
+    {
+        for (size_t ix=1; ix<Nx; ++ix)
+        {
+            En = Ax(ix, iy) * Ax(ix, iy) + Ay(ix, iy) * Ay(ix, iy) + Az(ix, iy) * Az(ix, iy);
+        }
+    }
+    En = En * 0.5 * dx * dy;
+    return En;
+}

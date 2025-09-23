@@ -17,6 +17,7 @@ class FieldGrid
     private:
     size_t Nx, Ny;
     GridVar<double> Ax, Ay, Az;
+    double dx, dy;
 
     using FieldRef = FieldRefTpl<double>;
     using ConstFieldRef = FieldRefTpl<const double>;
@@ -54,4 +55,5 @@ class FieldGrid
     void write_to_binary(const std::filesystem::path& path, const std::string &filename) const;
     void write_on_line(const std::filesystem::path& path, const std::string &filename, size_t ind, GridVar<double>::DiagnLine line_type) const;
     void write_at_point(const std::filesystem::path& path, const std::string &filename, size_t ix, size_t iy, size_t it) const;
+    double FieldGrid::Energy() const;
 };

@@ -24,6 +24,7 @@ void Diagnostics::create_field_dirs(const fs::path& dir, bool clear2D, bool clea
     clear_create_directory(field_dir / Fields1D_path / Fields1D_Current, clear1D);
 
     clear_create_directory(field_dir / FieldsPoint_path, clearPoint);
+    clear_create_directory(field_dir / FieldsEnergy_path, clearPoint);
 }
 
 void Diagnostics::initialise_point_diag(const fs::path& dir)
@@ -50,6 +51,15 @@ void Diagnostics::initialise_point_diag(const fs::path& dir)
         }
     }
 
+}
+
+void Diagnostics::initialise_energy_diag(const fs::path& dir)
+{
+    std::string filename = "EBFields_energy.txt";
+    fs::path file = dir / filename;
+    std::ofstream wf1(file, std::ios::out | std::ios::trunc);
+    wf1 << "#it    E    B" << std::endl;
+    wf1.close();
 }
 
 std::string Diagnostics::make_filename(size_t ind, size_t MaxSize)
@@ -150,4 +160,20 @@ void Diagnostics::run_pointFieldDiagnostic(const FieldGrid &E,const FieldGrid &B
             FieldDiagnostic_point(J, "PointFieldJ", pair.first, pair.second, ind_time);
         }
     }
+}
+
+void Diagnostics::FieldDiagnostic_Energy(const FieldGrid &E, const FieldGrid &B, size_t ind_time)
+{
+    std::filesystem::path path = field_dir / FieldsEnergy_path;
+    std::string filename = "EBFields_energy.txt";
+    std::ofstream wf(path / filename, std::ios::out | std::ios::app);
+    if (!wf.is_open())
+    {
+    throw std::runtime_error("Error openning the file: " + (path / filename).string());
+        }
+    wf<<ind_time<<"\t"<<E.Energy()<<"\t"<<B.Energy()<<std::endl;
+    wf.close();
+    if (wf.fail()) {
+    throw std::runtime_error("Error writing to file: " + (path / filename).string());
+       }
 }
