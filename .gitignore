@@ -2,3 +2,5 @@
 .vscode
 build/
 data/
+DOXY/html/
+DOXY/latex/
