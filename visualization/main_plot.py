@@ -13,25 +13,27 @@ matplotlib.rcParams.update({'font.size': 18})
 
 import vismodule as vis
 
-def make_filename(ind, MaxSize):
-    return str(ind).zfill(len(str(MaxSize)))
+
 
 def main():
-    data_dir = os.path.join(os.getcwd(), "data")
+    data_dir = os.path.normpath(os.path.join("..", os.getcwd(), "data"))
     field_dir = os.path.join(data_dir, "Fields")
     Nx, Ny = 10, 20
     MaxTime = 20
     TimeStep=1
 
     fig, axs = plt.subplots(4, 3, figsize=(16, 9))
+    vis.plot_all(axs, field_dir, TimeStep, MaxTime)
 
-    filename = "FieldE" +make_filename(TimeStep, MaxTime)+ ".bin"
+    """ filename = "FieldE" +make_filename(TimeStep, MaxTime)+ ".bin"
     path = os.path.join(field_dir, "2D", "ElectricFields", filename)
     E = vis.read_fieldgrid(path)
 
     titles_E = [r'$E_x$', r'$E_y$', r'$E_z$']
     for i, iE in enumerate(E):
-        vis.plot_2D(axs[0, i], iE, 'x', 'y', titles_E[i])
+        vis.plot_2D(axs[0, i], iE, titles_E[i]) """
+
+    
     plt.tight_layout()
     plt.show()
 
