@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <fstream>
 #include <filesystem>
-#include <GridCLs.hpp>
+#include <Fields/GridCLs.hpp>
 
 
 class FieldGrid
@@ -55,5 +55,5 @@ class FieldGrid
     void write_to_binary(const std::filesystem::path& path, const std::string &filename) const;
     void write_on_line(const std::filesystem::path& path, const std::string &filename, size_t ind, GridVar<double>::DiagnLine line_type) const;
     void write_at_point(const std::filesystem::path& path, const std::string &filename, size_t ix, size_t iy, size_t it) const;
-    double FieldGrid::Energy() const;
+    double Energy() const; 
 };

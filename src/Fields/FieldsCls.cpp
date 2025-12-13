@@ -1,4 +1,4 @@
-#include <FieldsCls.hpp>
+#include <Fields/FieldsCls.hpp>
 
 double FieldGrid::getX(size_t ix, size_t iy) const
 {
@@ -105,7 +105,7 @@ void FieldGrid::write_at_point(const std::filesystem::path& path, const std::str
        }
 }
 
-double FieldGrid::Energy()
+double FieldGrid::Energy() const
 {
     double En = 0.0;
     for (size_t iy=1; iy<Ny; ++iy)

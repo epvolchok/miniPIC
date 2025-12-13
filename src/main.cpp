@@ -2,8 +2,8 @@
 #include <filesystem>
 #include <numbers>
 
-#include <FieldSolver.hpp>
-#include <Diagnostics.hpp>
+#include <Fields/FieldSolver.hpp>
+#include <Diagnostics/Diagnostics.hpp>
 
 namespace fs = std::filesystem;
 

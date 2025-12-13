@@ -5,7 +5,7 @@
 #include <format>
 #include <set>
 
-#include <FieldsCls.hpp>
+#include <Fields/FieldsCls.hpp>
 
 namespace fs = std::filesystem;
 
@@ -63,7 +63,7 @@ class Diagnostics
     void clear_create_directory(const fs::path& dir, bool clear);
     void create_field_dirs(const fs::path& dir, bool clear2D, bool clear1D, bool clearPoint);
     void initialise_point_diag(const fs::path& dir);
-    void Diagnostics::initialise_energy_diag(const fs::path& dir);
+    void initialise_energy_diag(const fs::path& dir);
     
     std::string make_filename(size_t ind, size_t MaxSize);
     std::string line_type_str(const GridVar<double>::DiagnLine line_type); 
@@ -80,7 +80,7 @@ class Diagnostics
     void run_pointFieldDiagnostic(const FieldGrid &E,const FieldGrid &B, const FieldGrid &J, const size_t ind_time);
     void FieldDiagnostic_point(const FieldGrid &A, const std::string &filename_,
                                     const size_t ix, const size_t iy, const size_t ind_time);
-    void Diagnostics::FieldDiagnostic_Energy(const FieldGrid &E, const FieldGrid &B, size_t ind_time);
+    void FieldDiagnostic_Energy(const FieldGrid &E, const FieldGrid &B, size_t ind_time);
 
 
 };

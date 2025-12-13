@@ -1,4 +1,4 @@
-#include <Diagnostics.hpp>
+#include <Diagnostics/Diagnostics.hpp>
 
 void Diagnostics::clear_create_directory(const fs::path& dir, bool clear)
 {
