@@ -4,3 +4,7 @@ build/
 data/
 DOXY/html/
 DOXY/latex/
+visualization/__pycache__/
+visualization/*.py[cod]
+visualization/vismodule/__pycache__/
+visualization/vismodule/*.py[cod]
