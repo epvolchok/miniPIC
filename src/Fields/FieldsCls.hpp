@@ -42,7 +42,10 @@ class FieldGrid
         Ax{Nx_, Ny_, GridVar<double>::FillType::Const, val_},
         Ay{Nx_, Ny_, GridVar<double>::FillType::Const, val_},
         Az{Nx_, Ny_, GridVar<double>::FillType::Const, val_}
-        {}
+        {
+            dx = 0.5;
+            dy = 0.5;
+        }
 
     double getX(size_t ix, size_t iy) const;
     double getY(size_t ix, size_t iy) const;

@@ -108,13 +108,16 @@ void FieldGrid::write_at_point(const std::filesystem::path& path, const std::str
 double FieldGrid::Energy() const
 {
     double En = 0.0;
-    for (size_t iy=1; iy<Ny; ++iy)
+    for (size_t iy=0; iy<Ny; ++iy)
     {
-        for (size_t ix=1; ix<Nx; ++ix)
+        for (size_t ix=0; ix<Nx; ++ix)
         {
-            En = Ax(ix, iy) * Ax(ix, iy) + Ay(ix, iy) * Ay(ix, iy) + Az(ix, iy) * Az(ix, iy);
+            En += Ax(ix, iy) * Ax(ix, iy) + Ay(ix, iy) * Ay(ix, iy) + Az(ix, iy) * Az(ix, iy);
         }
     }
+    std::cout<<"energy 1 "<<En<<std::endl;
+    std::cout<<"dx "<<dx<<"dy "<<dy<<std::endl;
     En = En * 0.5 * dx * dy;
+    std::cout<<"energy 2 "<<En<<std::endl;
     return En;
 }

@@ -72,17 +72,23 @@ int main()
     //E1 - E^n+1
     //J(0, 5).x = 1.;
 
+    Diag.run_2DFieldDiagnostic(E0, B0, J, 0);
+    Diag.run_1DFieldDiagnostic(E0, B0, J, 0);
+    Diag.run_pointFieldDiagnostic(E0, B0, J, 0);
+
+    //Diag.FieldDiagnostic_Energy(E0, B0, 0);
+
     double t=0;
     for (size_t it=1; it<MaxTime; ++it)
     {
         std::cout<<"it = "<<it<<std::endl;
         t = it*dt;
 
-        Diag.run_2DFieldDiagnostic(E0, B0, J, it);
-        Diag.run_1DFieldDiagnostic(E0, B0, J, it);
-        Diag.run_pointFieldDiagnostic(E0, B0, J, it);
+        Diag.run_2DFieldDiagnostic(E0, B0, J, it-1);
+        Diag.run_1DFieldDiagnostic(E0, B0, J, it-1);
+        Diag.run_pointFieldDiagnostic(E0, B0, J, it-1);
 
-        Diag.FieldDiagnostic_Energy(E0, B0, it);
+        Diag.FieldDiagnostic_Energy(E0, B0, it-1);
 
         SetCurrent_external(J, 0, Nx, Ny, dt, t, w, J0, t0);
         
@@ -121,6 +127,10 @@ int main()
         F.FieldsSwap(E1, E0);
         
     }
+    Diag.run_2DFieldDiagnostic(E0, B0, J, MaxTime-1);
+    Diag.run_1DFieldDiagnostic(E0, B0, J, MaxTime-1);
+    Diag.run_pointFieldDiagnostic(E0, B0, J, MaxTime-1);
+    Diag.FieldDiagnostic_Energy(E0, B0, MaxTime-1);
 
     return 0;
 }

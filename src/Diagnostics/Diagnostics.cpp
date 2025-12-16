@@ -167,11 +167,17 @@ void Diagnostics::FieldDiagnostic_Energy(const FieldGrid &E, const FieldGrid &B,
     std::filesystem::path path = field_dir / FieldsEnergy_path;
     std::string filename = "EBFields_energy.txt";
     std::ofstream wf(path / filename, std::ios::out | std::ios::app);
+    double E_en=0.0;
+    double B_en=0.0;
     if (!wf.is_open())
     {
     throw std::runtime_error("Error openning the file: " + (path / filename).string());
         }
-    wf<<ind_time<<"\t"<<E.Energy()<<"\t"<<B.Energy()<<std::endl;
+    E_en = E.Energy();
+    B_en = B.Energy();
+    std::cout<<"ind "<<ind_time<<" E energy "<<E_en<<std::endl;
+    std::cout<<"ind "<<ind_time<<" B energy "<<B_en<<std::endl;
+    wf<<ind_time<<"\t"<<E_en<<"\t"<<B_en<<std::endl;
     wf.close();
     if (wf.fail()) {
     throw std::runtime_error("Error writing to file: " + (path / filename).string());
