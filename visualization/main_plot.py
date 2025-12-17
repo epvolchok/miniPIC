@@ -9,59 +9,40 @@ from matplotlib import gridspec
 rc('text', usetex=True)
 rc('font', family='serif')
 rc('text.latex', preamble=r"\usepackage[utf8]{inputenc}")
-matplotlib.rcParams.update({'font.size': 18})
+matplotlib.rcParams.update({'font.size': 14})
 
 import vismodule as vis
 
+def plot_fig(fig, axs, field_dir, params, TimeStep):
+    Nx, Ny, MaxTime = params
 
+    
+    vis.plot_all(fig, axs, field_dir, TimeStep, MaxTime, Nx, Ny)
+    
+    #MaxTimeDt=round(MaxTime*dt,1)
+    plt.figtext(0.5, 0.98,  rf'time = {TimeStep} steps',bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5),
+				color='black',fontsize=18,ha='center')
+
+    
+    plt.subplots_adjust(top=0.945,
+    bottom=0.047,
+    left=0.03,
+    right=0.952,
+    hspace=0.347,
+    wspace=0.197)
 
 def main():
     data_dir = os.path.normpath(os.path.join("..", os.getcwd(), "data"))
     field_dir = os.path.join(data_dir, "Fields")
-    Nx, Ny = 10, 20
+    Nx, Ny = 20, 10
     MaxTime = 20
-    TimeStep=1
-
-    fig, axs = plt.subplots(4, 3, figsize=(16, 9))
-    vis.plot_all(axs, field_dir, TimeStep, MaxTime)
-
-    """ filename = "FieldE" +make_filename(TimeStep, MaxTime)+ ".bin"
-    path = os.path.join(field_dir, "2D", "ElectricFields", filename)
-    E = vis.read_fieldgrid(path)
-
-    titles_E = [r'$E_x$', r'$E_y$', r'$E_z$']
-    for i, iE in enumerate(E):
-        vis.plot_2D(axs[0, i], iE, titles_E[i]) """
-
-    
-    plt.tight_layout()
+    TimeStep=30
+    Params = [Nx, Ny, MaxTime]
+    fig, axs = plt.subplots(4, 3, figsize=(17, 15))
+    plot_fig(fig, axs, field_dir, Params, TimeStep)
     plt.show()
 
-    """ path = os.path.join(os.getcwd(), "data", "Fields", "2D", filename)
-    Nx, Ny, Jx, Jy, Jz = read_fieldgrid(path, dtype=np.float64)
-    print(Jx.shape)
-    plot_2D(ax1, Jx, 'x', 'y', '')
 
-    filename = "FieldsE05.bin"
-    path = os.path.join(os.getcwd(), "data", "Fields", "2D", filename)
-    Nx, Ny, Jx, Jy, Jz = read_fieldgrid(path, dtype=np.float64)
-    print(Jx.shape)
-    plot_2D(ax2, Jx, 'x', 'y', '')
-
-    filename = "FieldsE10.bin"
-    path = os.path.join(os.getcwd(), "data", "Fields", "2D", filename)
-    Nx, Ny, Jx, Jy, Jz = read_fieldgrid(path, dtype=np.float64)
-    print(Jx.shape)
-    plot_2D(ax3, Jx, 'x', 'y', '')
-
-    filename = "FieldsE19.bin"
-    path = os.path.join(os.getcwd(), "data", "Fields", "2D", filename)
-    Nx, Ny, Jx, Jy, Jz = read_fieldgrid(path, dtype=np.float64)
-    print(Jx.shape)
-    plot_2D(ax4, Jx, 'x', 'y', '')
-
-    plt.tight_layout()
-    plt.show() """
 
 if __name__ == '__main__':
     
