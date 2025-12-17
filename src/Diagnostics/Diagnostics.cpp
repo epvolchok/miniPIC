@@ -175,8 +175,8 @@ void Diagnostics::FieldDiagnostic_Energy(const FieldGrid &E, const FieldGrid &B,
         }
     E_en = E.Energy();
     B_en = B.Energy();
-    std::cout<<"ind "<<ind_time<<" E energy "<<E_en<<std::endl;
-    std::cout<<"ind "<<ind_time<<" B energy "<<B_en<<std::endl;
+    //std::cout<<"ind "<<ind_time<<" E energy "<<E_en<<std::endl;
+    //std::cout<<"ind "<<ind_time<<" B energy "<<B_en<<std::endl;
     wf<<ind_time<<"\t"<<E_en<<"\t"<<B_en<<std::endl;
     wf.close();
     if (wf.fail()) {

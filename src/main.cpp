@@ -29,7 +29,7 @@ int main()
 
     size_t Nx = 20;
     size_t Ny = 10;
-    size_t MaxTime = 20;
+    size_t MaxTime = 50;
     
     double dx = 0.5, dy=0.5;
     double dt = 0.25;
@@ -72,11 +72,6 @@ int main()
     //E1 - E^n+1
     //J(0, 5).x = 1.;
 
-    Diag.run_2DFieldDiagnostic(E0, B0, J, 0);
-    Diag.run_1DFieldDiagnostic(E0, B0, J, 0);
-    Diag.run_pointFieldDiagnostic(E0, B0, J, 0);
-
-    //Diag.FieldDiagnostic_Energy(E0, B0, 0);
 
     double t=0;
     for (size_t it=1; it<MaxTime; ++it)
